@@ -192,10 +192,31 @@ class ValidateCSSJSONInput(object):
             # Re #265 - maybe in the future fetch the page and offer a
             # warning/notice that its possible the rule doesnt yet match anything?
 
+class ValidateCustomRequest(object):
+    """
+    Validation for Custom Request
+    """
+
+    def __init__(self, message=None):
+        self.message = message
+
+    def __call__(self, form, field):
+        url_valid = False
+
+        tokens = field.data.split()
+
+        url_data = {"data": tokens[0]}
+        url_valid = validators.URL(require_tld=False)(form=form, field=urlData)
+
+        request_method_specified = tokens.count("--request") == 1
+
+
+
+
 class quickWatchForm(Form):
     # https://wtforms.readthedocs.io/en/2.3.x/fields/#module-wtforms.fields.html5
     # `require_tld` = False is needed even for the test harness "http://localhost:5005.." to run
-    url = html5.URLField('URL', [validators.URL(require_tld=False)])
+    url = StringField('URL', [validators.URL(require_tld=False)])
     tag = StringField('Group tag', [validators.Optional(), validators.Length(max=35)])
 
 class commonSettingsForm(Form):
